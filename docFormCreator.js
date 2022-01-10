@@ -4,75 +4,117 @@ createSec.addEventListener('click', createSectionNode)
 var addQuestion = document.getElementById('addQuestion')
 var addTitleAndText = document.getElementById('addTitleAndText')
 var previewer = document.getElementById('previewer')
-for ( var i = 0, len = localStorage.length; i < len; ++i ) {
- var localStgkey=  Object.keys(localStorage)[i] 
-}
+var saveWork = document.getElementById('saveWork')
 
-var count = 1
-let currentCount = 1
+
+var maincount = 1
+var secCount = 1
+var quescount = 1
+var ttlcount = 1
 var secId = ''
-var mainParentId = "" 
-var testObject = { 'one': 1, 'two': 2, 'three': 3 };
+var mainParentId = ""
+var mainParentClass = ""
+var sectionId = ''
+var parentArr = []
 
-localStorage.setItem(`mainFormCreated`, JSON.stringify([]))
-localStorage.setItem(`mainFormHtml`, JSON.stringify([]))
-// var existingEntries = JSON.parse(localStorage.getItem("mainFormCreated"));
-// var existingEntries2 = JSON.parse(localStorage.getItem("mainFormHtml"));
 
 function formDiv() {
   var FormDivls = document.createElement('div')
   var FormDivNode = document.createElement('div')
   var formHrNode = document.createElement('div')
-  FormDivls.setAttribute('id', `FormDivls${count}`)
-  FormDivNode.setAttribute('id', `formDiv${count}`)
- 
-  FormDivNode.setAttribute('class', `mainParentFormDiv`)
+  FormDivls.setAttribute('id', `FormDivls${maincount}`)
+  FormDivNode.setAttribute('id', `formDiv${maincount}`)
+  FormDivNode.setAttribute('class', `rounded-3 mainParentFormDiv formDiv${maincount}`)
   formHrNode.setAttribute('style', `border-bottom: 1px solid lightgrey ;`)
   FormDivNode.addEventListener('click', selectedParent)
   return { FormDivls, FormDivNode, formHrNode }
 }
+
 var secformDiv = formDiv()
-// body.innerText = JSON.stringify(existingEntries2)
+
+function selectedParent(e) {
+  secId = e.currentTarget.id
+  sectionId = e.currentTarget.id
+  mainParentId = secId
+  mainParentClass = sectionId
+  var SecObj = { 'CurrentSecId': mainParentId, 'title': '', 'discription': '' }
+  if (parentArr.filter(each => { return each.CurrentSecId === mainParentId; }).length > 0) {
+    var matchTru = null
+    var getCurrSecId = document.querySelector(`#${mainParentId}`)
+    var child = getCurrSecId.children[0];
+    var subChild = child.children[0].value || child.childNodes[0].value
+    var subChild1 = child.children[1].value || child.childNodes[1].value
+    matchTru =parentArr.filter(each => { return each.title = subChild; }).length > 0
+    parentArr.filter(each => { return each.discription = subChild1; }).length > 0
+    console.log(`matchTru`, matchTru)
+    //for(var each of parentArr ){
+    //var oEl;
+    //for(let i=0;i<parentArr.length;i++){
+    // if(parentArr[i].CurrentSecId === mainParentId)
+    // {
+    //   parentArr[i].title = subChild;
+    //   parentArr[i].discription = subChild1;
+
+    // }
+    // else{
+    //   parentArr[i].title = '';
+    //   parentArr[i].discription = '';
+
+
+    // }
+
+    console.log(`currentSection: ${mainParentId},  title: ${subChild} ,  discription: ${subChild1}`)
+    console.log(`currentSection:`, parentArr)
+
+  }
+  else {
+    parentArr.push(SecObj)
+  }
+  
+  addTitleToLocalStorage(parentArr)
+  secId = ''
+}
+//Section Function
 function createSectionNode() {
   var divNode = document.createElement('div')
-  divNode.setAttribute('class', 'addSecDiv')
-  
-  // var pNode = document.createElement('p')
-  // var pNodeDiscription = document.createTextNode(`section ${currentCount} of section ${count}`)
-  // if (pNodeDiscription) pNode.appendChild(pNodeDiscription)
-  var frmDiv = formDiv()
+  divNode.setAttribute('class', 'rounded-3 addSecDiv')
 
+  var frmDiv = formDiv()
   if (frmDiv) body.appendChild(frmDiv.FormDivls)
   if (frmDiv.FormDivls) frmDiv.FormDivls.appendChild(frmDiv.FormDivNode)
   if (frmDiv) body.appendChild(frmDiv.formHrNode)
-  // if (pNode) frmDiv.FormDivNode.appendChild(pNode)
   if (divNode) frmDiv.FormDivNode.appendChild(divNode)
-  currentCount = count++
-  var TextHeadingName = document.createElement('textarea')
-  TextHeadingName.setAttribute('class', 'textHeadingName')
-  var headingUntitledName = document.createTextNode('Untititled Section')
-  if (headingUntitledName) TextHeadingName.appendChild(headingUntitledName)
-  var textDiscription = document.createElement('textarea')
-  textDiscription.setAttribute('class', 'textDiscription')
-  addEleToLocalStorage(frmDiv.FormDivls,TextHeadingName,textDiscription)
-  if (TextHeadingName) divNode.appendChild(TextHeadingName)
-  if (textDiscription) divNode.appendChild(textDiscription)
+  var SecHeading = document.createElement('textarea')
+  SecHeading.setAttribute('class', `SecTitle`)
+  SecHeading.setAttribute('id', `SecTitleId${secCount}`)
+  SecHeading.setAttribute('placeholder', 'Untititled Title')
+  var SecDis = document.createElement('textarea')
+  SecDis.setAttribute('class', `SecDis`)
+  SecDis.setAttribute('id', `SecDisId${secCount}`)
+  SecDis.setAttribute('placeholder', 'add Discription')
+  if (SecHeading) divNode.appendChild(SecHeading)
+  if (SecDis) divNode.appendChild(SecDis)
   fixTextArea()
-  console.log(`frmDiv.FormDivNode`, frmDiv.FormDivNode)
- //addEntryToLocalStorage(TextHeadingName,textDiscription ,existingEntries) 
- //localStorage.setItem("mainFormCreated", JSON.stringify(existingEntries));
+  if (parentArr == null) parentArr = [];
+  // console.log(`parentArr`, parentArr)
 
-  //window.localStorage.setItem(`mainFormCreated`, `${JSON.stringify(frmDiv.FormDivNode.innerHTML)}`)
+  secCount++
+  maincount++
 }
+if(localStorage.getItem("allEntries"))
+{
+  localStorage.getItem("allEntries")
+}
+else{
+  addTitleToLocalStorage(parentArr)
 
-addQuestion.addEventListener('click', function () {
-  questionSec(mainParentId)
-})
-function selectedParent(e) {
-  secId = e.currentTarget.id
-  mainParentId = secId
-  secId = ''
 }
+// addQuestion.addEventListener('click', function () {
+//   questionSec(mainParentId)
+// })
+
+
+// Question Function
 function questionSec(mainParentId) {
   var questionDivNode = document.createElement('div')
   var breakNode = document.createElement('br')
@@ -81,12 +123,12 @@ function questionSec(mainParentId) {
   questionDivNode.setAttribute('class', 'addQuesDiv')
   if (questionDivNode) formDivId.appendChild(questionDivNode)
 
-  var questionSecHeading = document.createElement('textarea')
-  questionSecHeading.setAttribute('class', 'questionSecHeading')
-  if (questionSecHeading) questionDivNode.appendChild(questionSecHeading)
+  var questionText = document.createElement('textarea')
+  questionText.setAttribute('class', `questionText`)
+  questionText.setAttribute('id', `questionTextId`)//${quescount+40}`)
+  questionText.setAttribute('placeHolder', 'my question is ?')
+  if (questionText) questionDivNode.appendChild(questionText)
 
-  var headingUntitledName = document.createTextNode('my question is ?')
-  if (headingUntitledName) questionSecHeading.appendChild(headingUntitledName)
   if (breakNode) questionDivNode.appendChild(breakNode)
 
   var divRadNode = document.createElement('div')
@@ -96,171 +138,88 @@ function questionSec(mainParentId) {
   var questionOptions = document.createElement('input')
   questionOptions.setAttribute('type', 'radio')
   questionOptions.setAttribute('class', 'questionOptions r1')
-  var handleRadioText = document.createElement('input')
-  handleRadioText.setAttribute('type', 'text')
-  handleRadioText.setAttribute('class', 'quesOptionText r1')
+  var quesOptionText = document.createElement('input')
+  quesOptionText.setAttribute('type', 'text')
+  quesOptionText.setAttribute('class', `quesOptionText r1`)
+  quesOptionText.setAttribute('id', `quesOptionTextId`)//${quescount+30} r1`)
+  quesOptionText.setAttribute('placeholder', 'option text')
 
   if (questionOptions) divRadNode.appendChild(questionOptions)
-  if (handleRadioText) divRadNode.appendChild(handleRadioText)
+  if (quesOptionText) divRadNode.appendChild(quesOptionText)
 
   fixTextArea()
-  console.log(`formDivId`, formDivId)
-  window.localStorage.setItem(`mainParentId`, JSON.stringify(formDivId.innerHTML))
+
+
+  quescount++
 
 }
-function quesOptions(){
-  
+function quesOptions() {
+
   var questionOptions = document.createElement('input')
   questionOptions.setAttribute('type', 'radio')
   questionOptions.setAttribute('class', 'questionOptions r1')
-  var handleRadioText = document.createElement('input')
-  handleRadioText.setAttribute('type', 'text')
-  handleRadioText.setAttribute('class', 'quesOptionText r1')
+  var quesOptionText = document.createElement('input')
+  quesOptionText.setAttribute('type', 'text')
+  quesOptionText.setAttribute('class', 'quesOptionText r1')
 
   if (questionOptions) divRadNode.appendChild(questionOptions)
-  if (handleRadioText) divRadNode.appendChild(handleRadioText)
+  if (quesOptionText) divRadNode.appendChild(quesOptionText)
 }
-addTitleAndText.addEventListener('click', function () {
-  addTitleAndDiscription(mainParentId)
-})
-function addTitleAndDiscription(mainParentId) {
-  var addTitleDivNode = document.createElement('div')
-  addTitleDivNode.setAttribute('class', 'addSecDiv')
 
-  var formDivId = document.getElementById(`${mainParentId}`)
 
-  if (addTitleDivNode) formDivId.appendChild(addTitleDivNode)
-  currentCount = count++
-  
-  var TextHeadingName = document.createElement('textarea')
-  TextHeadingName.setAttribute('class', 'textHeadingName')
-  var headingUntitledName = document.createTextNode('add Title')
-  if (headingUntitledName) TextHeadingName.appendChild(headingUntitledName)
+saveWork.addEventListener('click', addEntryToLocalStorage)
 
-  var textDiscription = document.createElement('textarea')
-  textDiscription.setAttribute('class', 'textDiscription')
-
-  if (TextHeadingName) addTitleDivNode.appendChild(TextHeadingName)
-  if (textDiscription) addTitleDivNode.appendChild(textDiscription)
-  fixTextArea()
-  console.log(`formDivId in addTitleAndDiscription`, formDivId)
-  
-
-}
-function addEntryToLocalStorage(ttl,dis,exE) {
- 
+function addEntryToLocalStorage() {
+  //debugger
   // Parse the JSON stored in allEntriesP
-  var existingEntries = JSON.parse(localStorage.getItem("mainFormCreated"));
+  var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+  var qAs;
+  console.log(`mainParentId`, mainParentId)
+
   if (existingEntries == null) existingEntries = [];
-  var tltHtml = document.getElementById("entryTitle");
-    var dicHtml = document.getElementById("entryText");
-      var quesStatement = document.getElementById("quesStatement");
-    var options = document.getElementById("options");
-
-var qA1={
-'quesStatement':quesStatement.value,
-  'options':options.value
-}
-var qAObjs ={
-'qA1':qA1
-}
-var qAs =[]
+  if (qAs == null) qAs = []
+  var getSecHeadingClass = document.querySelector(`#SecHeadingId`)///${secCount + 40}`);
+  var getSecDisClass = document.querySelector(`#SecDisId`)//${secCount + 30}`);
+  var quesStatement = document.querySelector(`#questionTextId`)//${quescount}`);
+  var optText = document.querySelector(`#quesOptionTextId`)//${quescount}`);
+  // var qA1 = {
+  //   'quesStatement': quesStatement.value,
+  //   'options': optText.value
+  // }
   var untTlt = {
-    'tltHtml': tltHtml.value,
-    'disHtml': dicHtml.value
+    'tltHtml': getSecHeadingClass.value,
+    'disHtml': getSecDisClass.value
 
   }
-  var secObjs = {
-    'untTldSec': untTlt,
-    'quesArray':qAs
-  }
-
-  var entryText = document.getElementById("entryText").value;
-  let sec1=`${mainParentId}`
   var secObjects = {
-   sec1 : secObjs,
+    currSecId: mainParentId,
+    'untTldSec': untTlt,
+    //'quesArray': qAs
   };
 
-    qAs.push(qAObjs);
+
 
   existingEntries.push(secObjects);
   localStorage.setItem("allEntries", JSON.stringify(existingEntries));
-  count++
 };
-var sec_1;
-function addEleToLocalStorage(mdiv,ttl,dis) {
- 
+function addTitleToLocalStorage(pArr) {
   // Parse the JSON stored in allEntriesP
-  //var existingEntries = JSON.parse(localStorage.getItem("mainFormCreated"));
-  if (existingEntries2 == null) existingEntries2 = [];
-  var tltHtml = document.getElementById("entryTitle");
-    var dicHtml = document.getElementById("entryText");
-      var quesStatement = document.getElementById("quesStatement");
-    var options = document.getElementById("options");
-
-
-var qAObjs ={
-  'quesStatement':quesStatement,
-  'options':options
-}
-var qAs =[]
-  var untTlt = {
-    'tltHtml': JSON.stringify(ttl.innerHTML), //ttl.innerHTML,
-    'disHtml':  JSON.stringify(dis.innerHTML)
-
-  }
-  var secObjs = {
-    'untTldSec': untTlt,
-    'quesArray':qAs
-  }
-
-  //var entryText = document.getElementById("entryText").value;
-   sec_1=`${mainParentId}`
-  var secObjects = {
-    secEle: JSON.stringify(mdiv.innerHTML),
-   sec_1 : secObjs,
-  };
-
-    qAs.push(qAObjs);
-
-  existingEntries2.push(secObjects);
-  localStorage.setItem("mainFormHtml", JSON.stringify(existingEntries2));
-  count++
+  var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+  console.log(`existingEntries`, existingEntries)
+ // if (existingEntries == null) existingEntries = [];
+  localStorage.setItem("allEntries", JSON.stringify(pArr));
 };
-function fixTextArea() {
-  var tx = document.getElementsByTagName('textarea');
-  for (var i = 0; i < tx.length; i++) {
-    tx[i].setAttribute('style', 'height:' + (tx[i].scrollHeight) / 1.1 + 'px;overflow-y:hidden;');
-    tx[i].addEventListener("input", function () {
-      this.style.height = 'auto';
-      this.style.height = (this.scrollHeight) + 'px';
-
-    }, false);
-  }
-}
-
-function OnInput(e) {
-  this.style.height = 'auto';
-  this.style.height = (this.scrollHeight) + 'px';
-}
 
 
-// Add active class to the current button (highlight it)
 
-var mainParentDiv = body.querySelectorAll("mainParentFormDiv");
-for (var i = 0; i < mainParentDiv.length; i++) {
-  mainParentDiv[i].addEventListener("click", function () {
-    var current = document.getElementsByClassName("active");
-    if (current.length > 0) {
-      current[0].className = current[0].className.replace(" active", "");
-    }
-    this.className += " active";
-  });
-}
+
+
+
+
+
 
 previewer.addEventListener('click', preView)
-function preView(){
-  window.location.href= './docFormViewer.html'
-  //window.location.href = './welcomePage.html';
+function preView() {
+   window.location.href = './docFormViewer.html'
 
 }
