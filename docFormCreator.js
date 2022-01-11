@@ -1,3 +1,4 @@
+var bodyNode = document.querySelector('body')
 var body = document.querySelector('.body')
 var createSec = document.getElementById('createSec')
 createSec.addEventListener('click', createSectionNode)
@@ -6,6 +7,8 @@ var addTitleAndText = document.getElementById('addTitleAndText')
 var previewer = document.getElementById('previewer')
 var saveWork = document.getElementById('saveWork')
 
+var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+
 
 var maincount = 1
 var secCount = 1
@@ -13,9 +16,29 @@ var quescount = 1
 var ttlcount = 1
 var secId = ''
 var mainParentId = ""
-var mainParentClass = ""
-var sectionId = ''
 var parentArr = []
+let mainState = {
+  title: '',
+  description: '',
+  questions: [
+    {
+      question: '',
+      type: '',
+      options: [
+        { option: '', correct: false },
+        { option: '', correct: false },
+      ]
+    },
+    {
+      question: '',
+      type: '',
+      options: [
+        { option: '', correct: false },
+        { option: '', correct: false },
+      ]
+    }
+  ]
+}
 
 
 function formDiv() {
@@ -29,50 +52,55 @@ function formDiv() {
   FormDivNode.addEventListener('click', selectedParent)
   return { FormDivls, FormDivNode, formHrNode }
 }
+//bodyNode.addEventListener('click',function(){
+//var preEntries =addTitleToLocalStorage(parentArr)
+// if(existingEntries == undefined || null){
+//   var preEntries =addTitleToLocalStorage(parentArr)
 
+
+// }
+// else{
+//   var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+
+// }
+//},false)
 var secformDiv = formDiv()
 
 function selectedParent(e) {
   secId = e.currentTarget.id
-  sectionId = e.currentTarget.id
+  //sectionId = e.currentTarget.id
   mainParentId = secId
-  mainParentClass = sectionId
-  var SecObj = { 'CurrentSecId': mainParentId, 'title': '', 'discription': '' }
-  if (parentArr.filter(each => { return each.CurrentSecId === mainParentId; }).length > 0) {
-    var matchTru = null
-    var getCurrSecId = document.querySelector(`#${mainParentId}`)
-    var child = getCurrSecId.children[0];
-    var subChild = child.children[0].value || child.childNodes[0].value
-    var subChild1 = child.children[1].value || child.childNodes[1].value
-    matchTru =parentArr.filter(each => { return each.title = subChild; }).length > 0
-    parentArr.filter(each => { return each.discription = subChild1; }).length > 0
-    console.log(`matchTru`, matchTru)
-    //for(var each of parentArr ){
-    //var oEl;
-    //for(let i=0;i<parentArr.length;i++){
-    // if(parentArr[i].CurrentSecId === mainParentId)
-    // {
-    //   parentArr[i].title = subChild;
-    //   parentArr[i].discription = subChild1;
+  //mainParentClass = sectionId
 
-    // }
-    // else{
-    //   parentArr[i].title = '';
-    //   parentArr[i].discription = '';
-
-
-    // }
-
-    console.log(`currentSection: ${mainParentId},  title: ${subChild} ,  discription: ${subChild1}`)
-    console.log(`currentSection:`, parentArr)
-
-  }
-  else {
-    parentArr.push(SecObj)
-  }
-  
-  addTitleToLocalStorage(parentArr)
   secId = ''
+}
+
+//get element from local storage
+if (existingEntries != undefined || null) {
+
+  for (let i = 0; i <= existingEntries.length; i++) {
+    createSectionNode()
+
+    var SecTitleAll = document.querySelector(`#SecTitleId${i + 1}`)
+    var SecDisAll = document.querySelector(`#SecDisId${i + 1}`)
+
+    if (typeof existingEntries !== 'undefined' && existingEntries.length === 0) {
+
+      SecTitleAll.innerText = " untitled Title "
+
+      SecDisAll.innerText = "untitled Discription"
+    }
+    // else {
+    //   SecTitleAll.innerText = existingEntries[i].title //== undefined ? " untitled Title " : existingEntries[i].title 
+
+    //   SecDisAll.innerText = existingEntries[i].discription// == undefined ? "untitled Discription" : existingEntries[i].discription
+
+    // }
+  }
+}
+else {
+  var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+
 }
 //Section Function
 function createSectionNode() {
@@ -96,19 +124,11 @@ function createSectionNode() {
   if (SecDis) divNode.appendChild(SecDis)
   fixTextArea()
   if (parentArr == null) parentArr = [];
-  // console.log(`parentArr`, parentArr)
 
   secCount++
   maincount++
 }
-if(localStorage.getItem("allEntries"))
-{
-  localStorage.getItem("allEntries")
-}
-else{
-  addTitleToLocalStorage(parentArr)
 
-}
 // addQuestion.addEventListener('click', function () {
 //   questionSec(mainParentId)
 // })
@@ -167,8 +187,65 @@ function quesOptions() {
 }
 
 
-saveWork.addEventListener('click', addEntryToLocalStorage)
+saveWork.addEventListener('click', function () {
+  localArr()
+  addTitleToLocalStorage(parentArr)
+}, false)
+function localArr() {
+  var state = { 'CurrentSecId': mainParentId, 'title': '', 'discription': '' }
+  //var state = {  'title': '', 'discription': '' }
+  //if (parentArr.filter(each => { return each.CurrentSecId === mainParentId; }).length > 0) {
+  var matchIndex =-1
+  if (parentArr.length > 0) {
+    for(let i=0 ;i<parentArr.length ;i++){
+    var getCurrSec = document.querySelector(`#${mainParentId}`)
+    var child = getCurrSec.children[0];
+    var subChild = child.children[0].value || child.childNodes[0].value
+    var subChild1 = child.children[1].value || child.childNodes[1].value
+    //parentArr.filter(each => { return each.title = subChild; }).length > 0
+    //parentArr.filter(each => { return each.discription = subChild1; }).length > 0
+    //for (let ech of parentArr) {
+      if(parentArr[i].CurrentSecId === mainParentId){
+          parentArr[i].CurrentSecId = matchIndex
+        if(parentArr[i].CurrentSecId ===matchIndex){
+          parentArr[matchIndex].title =subChild
+        parentArr[matchIndex].discription =subChild1
+        }
+      }
+      else{
+        if(parentArr[i].CurrentSecId ===matchIndex){
+          parentArr[i].title =subChild
+        parentArr[i].discription =subChild1
+        }
+      }
+      // parentArr.forEach(v => {
+      //   v.title =subChild
+      //   v.discription =subChild1
+      //   //, isActive: true
+      // })
+      // parentArr.forEach(v => {
+      //   //v.title =subChild,
+      //   v.discription =subChild1
+      //   //, isActive: true
+      // })
+    //}
+    console.log(`currentSection: ${mainParentId},  title: ${subChild} ,  discription: ${subChild1}`)
+    console.log(`currentSection:`, parentArr)
+    //parentArr.push(state)
+    }
+  }
+  else {
+    parentArr.push(state)
+  }
 
+}
+function addTitleToLocalStorage(parentArr) {
+  // Parse the JSON stored in allEntriesP
+  var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+  console.log(`existingEntries`, existingEntries)
+  // if (existingEntries == null) existingEntries = [];
+  localStorage.setItem("allEntries", JSON.stringify(parentArr));
+};
 function addEntryToLocalStorage() {
   //debugger
   // Parse the JSON stored in allEntriesP
@@ -202,24 +279,31 @@ function addEntryToLocalStorage() {
   existingEntries.push(secObjects);
   localStorage.setItem("allEntries", JSON.stringify(existingEntries));
 };
-function addTitleToLocalStorage(pArr) {
-  // Parse the JSON stored in allEntriesP
-  var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
-  console.log(`existingEntries`, existingEntries)
- // if (existingEntries == null) existingEntries = [];
-  localStorage.setItem("allEntries", JSON.stringify(pArr));
-};
 
 
 
 
 
+function fixTextArea() {
+  // Add active class to the current button (highlight it)
+  var tx = document.getElementsByTagName('textarea');
+  for (var i = 0; i < tx.length; i++) {
+    tx[i].setAttribute('style', 'height:' + (tx[i].scrollHeight) / 1.1 + 'px;overflow-y:hidden;');
+    tx[i].addEventListener("input", function () {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+
+    }, false);
+  }
+}
 
 
 
 
-previewer.addEventListener('click', preView)
+previewer.addEventListener('click', function () {
+  preView()
+})
 function preView() {
-   window.location.href = './docFormViewer.html'
+  window.location.href = './docFormViewer.html'
 
 }

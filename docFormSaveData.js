@@ -1,7 +1,3 @@
-var body = document.querySelector('.prevbody')
-var SecTitleAll = body.querySelectorAll('.SecTitle') //|| document.querySelector('.SecTitle')
-var SecDisAll = body.querySelectorAll('.SecDis')
-
 var maincount = 1
 var secCount = 1
 var quescount = 1
@@ -11,8 +7,14 @@ var mainParentId = ""
 var mainParentClass = ""
 var sectionId = ''
 var parentArr = []
-
 var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+
+var body = document.querySelector('.prevbody')
+//var SecTitleAll = document.querySelectorAll('.SecTitle') //|| document.querySelector('.SecTitle')
+var SecDisAll = document.getElementsByClassName('.SecDis')
+
+
+
 console.log(`existingEntries`, existingEntries)
 function formDiv() {
   var FormDivls = document.createElement('div')
@@ -33,7 +35,20 @@ function selectedParent(e) {
 
 secId =''
 }
-var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+
+
+for(let i=0; i<existingEntries.length; i++){
+  console.log(`existingEntries[i].title ${i}`, existingEntries[i].title)
+  prevTitleDiscriptionNodes(existingEntries[i].title,existingEntries[i].discription)
+  console.log(`SecDisAll`, SecDisAll)
+  
+  var SecTitleAll = document.querySelector(`#SecTitleId${i+1}`) //|| document.querySelector('.SecTitle')
+  var SecDisAll = document.querySelector(`#SecDisId${i+1}`) //|| document.querySelector('.SecTitle')
+
+  SecTitleAll.innerText =existingEntries[i].title + " "+ existingEntries[i].CurrentSecId 
+
+  SecDisAll.innerText =existingEntries[i].discription
+}
 
 function prevTitleDiscriptionNodes(ttlArr,disArr) {
   var divNode = document.createElement('div')
@@ -55,29 +70,11 @@ function prevTitleDiscriptionNodes(ttlArr,disArr) {
   if (SecHeading) divNode.appendChild(SecHeading)
   if (SecDis) divNode.appendChild(SecDis)
   fixTextArea()
-  for(let i=0; i<=existingEntries.length; i++){
-    console.log(`SecTitleAll`, SecTitleAll)
-    console.log(`disArr`, disArr)
-   // SecTitleAll[i].innerText =ttlArr[i]
   
-   // SecDisAll[i].innerText =disArr[i]
-  }
-  // console.log(`parentArr`, parentArr)
 
   secCount++
   maincount++
 }
-for(let i=0; i<existingEntries.length; i++){
-
-  prevTitleDiscriptionNodes(existingEntries[i].title,existingEntries[i].discription)
-  console.log(`SecTitleAll`, SecTitleAll)
-
-//   SecTitleAll[i].innerText =
-
-// SecDisAll[i].innerText =existingEntries[i].discription
-}
-
-
 
 
 function fixTextArea() {
