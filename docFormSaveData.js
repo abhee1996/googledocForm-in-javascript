@@ -37,7 +37,7 @@ secId =''
 }
 
 
-for(let i=0; i<existingEntries.length; i++){
+for(let i=0; i<existingEntries?.length; i++){
   console.log(`existingEntries[i].title ${i}`, existingEntries[i].title)
   prevTitleDiscriptionNodes(existingEntries[i].title,existingEntries[i].discription)
   console.log(`SecDisAll`, SecDisAll)

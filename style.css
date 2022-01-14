@@ -32,6 +32,11 @@ body{
      text-decoration: none;
      overflow:auto
 }
+.questionText{
+    height:50px;
+    width:80%;
+    margin-right:20px;
+}
 .SecDis,.textDiscription{
     border:1px solid grey;
     height:20px;
@@ -49,13 +54,13 @@ body{
      /* overflow-y:scroll !important */
 }
 .addRadioInDiv{
-    display: inline-block;
-    padding: 10px;
-    margin: 15px;;
+    /* display: inline-block; */
+    padding: 10px 10px 10px 2px;
+    margin: 15px 15px 15px 0px;;
 }
 .mainParentFormDiv{
     margin: 40px;
-    border: 1px solid grey ;
+    /* border: 1px solid grey ; */
     /* //border-radius: 5%; */
 
 }
@@ -74,4 +79,12 @@ textarea{
 .quesOptionText{
     border: none !important;
     border-bottom: 1px solid lightgrey  !important;
+}
+.questxtDiv{
+    display: flex;
+    justify-content: space-around;
+}
+.questxtDiv .sel{
+    border: none !important;
+
 }
