@@ -42,8 +42,8 @@ for(let i=0; i<existingEntries?.length; i++){
   prevTitleDiscriptionNodes(existingEntries[i].title,existingEntries[i].discription)
   console.log(`SecDisAll`, SecDisAll)
   
-  var SecTitleAll = document.querySelector(`#SecTitleId${i+1}`) //|| document.querySelector('.SecTitle')
-  var SecDisAll = document.querySelector(`#SecDisId${i+1}`) //|| document.querySelector('.SecTitle')
+  var SecTitleAll = document.querySelector(`#SecTitleId${i+1}`)
+  var SecDisAll = document.querySelector(`#SecDisId${i+1}`)
 
   SecTitleAll.innerText =existingEntries[i].title + " "+ existingEntries[i].CurrentSecId 
 

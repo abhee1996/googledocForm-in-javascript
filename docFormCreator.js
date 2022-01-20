@@ -1,19 +1,4 @@
 
-// Test import of a JavaScript module
-import { example } from '@/js/example'
-import { createTitleDiscNode } from '@/js/TitleDiscription'
-//import { mainParentId } from '@/js/TitleDiscription'
-//import { localArr } from '@/js/saveTolocalStrg'
-import { addTitleToLocalStorage } from '@/js/saveTolocalStrg'
-//import { questionSec } from '@/js/Question'
-//import { state } from '@/state'
-
-// Test import of an asset
-import webpackLogo from '@/images/webpack-logo.svg'
-
-// Test import of styles
-import '@/styles/index.scss'
-import '@/styles/style.css'
 //import '@/'
 var bodyNode = document.querySelector('body')
 var body = document.querySelector('.body')
@@ -26,6 +11,7 @@ var saveWork = document.getElementById('saveWork')
 
 var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
 
+var quesNode
 
 var maincount = 1
 var secCount = 1
@@ -34,8 +20,11 @@ var qOptcount = 1
 var secId = ''
 var mainParentId = ""
 var getquestionID = ''
-var currSelectedQtype =''
+var currSelectedQtype = 'radio'
+var OptionTypeCount = 0
+var uniqueOptionsType =''
 var getquestionOptionID = ''
+//var getSelectBoxId = ''
 var parentArr = []
 var state = {
   CurrentSecId: mainParentId,
@@ -140,7 +129,7 @@ function questionSec(mainParentId) {
   questionDivNode.setAttribute('class', 'addQuesDiv')
   var questxtDiv = createMultiNode(questionDivNode, 'div', `questxtDiv`)
 
-
+  quesNode = questionDivNode
   var questionText = document.createElement('textarea')
   questionText.setAttribute('class', `questionText`)
   getquestionID = `questionTextId${quescount + 40}`
@@ -154,13 +143,13 @@ function questionSec(mainParentId) {
   var moreOptsBtn = document.createTextNode(`add options`)
 
   addMultiOptions.addEventListener('click', function () {
-    quesOptions(questionDivNode, getquestionID)
+    quesOptions(quesNode, currSelectedQtype)
   })
   fixTextArea()
   if (questionDivNode) formDivId.appendChild(questionDivNode)
 
   if (questionText) questxtDiv.appendChild(questionText)
-  createSelectOptionNode(questxtDiv,'sel')
+  createSelectOptionNode(questxtDiv, 'sel')
 
 
   createMultiNode(questionDivNode, 'br')
@@ -170,38 +159,36 @@ function questionSec(mainParentId) {
   createMultiNode(questionDivNode, 'br')
 
 
-  quesOptions(questionDivNode, getquestionID) //create mcqs options
+ // quesOptions(quesNode, currSelectedQtype) //create mcqs options
 
 
   console.log(`getquestionID`, getquestionID)
   quescount++
-
+  OptionTypeCount++
 }
 function selectedQtype(e) {
   qTypeId = e.currentTarget.id
   currSelectedQtype = qTypeId
   qTypeId = ''
 }
-function quesOptions(questionDivNode, getquestionID) {
-  var getquestion = document.getElementById(`${getquestionID}`)
+function quesOptions(quesNode, currSelectedQtype) {
   var divRadNode = document.createElement('div')
   divRadNode.setAttribute('class', 'addRadioInDiv')
   var optTypeRadio = document.createElement('input')
-  optTypeRadio.setAttribute('type', currSelectedQtype || 'radio')
-  optTypeRadio.setAttribute('class', 'questionOptions r1')
+  optTypeRadio.setAttribute('type', currSelectedQtype)// || 'radio')
+  uniqueOptionsType =`questionOptions${OptionTypeCount}`
+  optTypeRadio.setAttribute('class', `${uniqueOptionsType} r1`)
   var quesOptionText = document.createElement('input')
   quesOptionText.setAttribute('type', 'text')
   quesOptionText.setAttribute('class', `quesOptionText r1`)
   getquestionOptionID = `quesOptionTextId${quescount + 30}`
   quesOptionText.setAttribute('id', `${getquestionOptionID}`)
   quesOptionText.setAttribute('placeholder', 'option text')
-  if (divRadNode) questionDivNode.appendChild(divRadNode)
+  if (divRadNode) quesNode.appendChild(divRadNode)
   if (optTypeRadio) divRadNode.appendChild(optTypeRadio)
   if (quesOptionText) divRadNode.appendChild(quesOptionText)
 
 }
-
-//addMoreOptions && 
 
 
 
@@ -368,7 +355,7 @@ function createMultiNode(parent, node, cls) {
   if (createNode) createNode.setAttribute('class', cls)
   return createNode
 }
-function createSelectOptionNode(parent,  cls) {
+function createSelectOptionNode(parent, cls) {
   var selectNode = document.createElement('select')
   var option1 = document.createElement('option')
   if (option1) option1.setAttribute('id', 'radio')
@@ -385,9 +372,25 @@ function createSelectOptionNode(parent,  cls) {
   if (opt1) option1.appendChild(opt1)
   if (opt2) option2.appendChild(opt2)
   if (selectNode) selectNode.setAttribute('class', cls)
+  if (selectNode) selectNode.setAttribute('id', 'SelQuesType')
+  if (selectNode) selectNode.setAttribute('onchange', 'showOptions(this)')
+  var SelQuesType = document.getElementById('SelQuesType')
+  SelQuesType.addEventListener('change',function(){
+    var getAllatype = document.querySelectorAll(`.${uniqueOptionsType}`)
+    for(op=0 ;op<getAllatype?.length; op++){
+      getAllatype[op].setAttribute('type',currSelectedQtype)
+    }
+  } ,false)
   return selectNode
 }
 
+function showOptions(e) {
+  var selOptionId = e[e.selectedIndex].id
+  currSelectedQtype = selOptionId
+  selOptionId = ''
+  console.log("id is ", e[e.selectedIndex].id); // get id
+
+}
 
 
 
